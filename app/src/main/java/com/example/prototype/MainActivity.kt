@@ -19,20 +19,12 @@ class MainActivity : AppCompatActivity() {
 
         val captureButton = findViewById<Button>(R.id.capture_button)
         captureButton.setOnClickListener {
-            val result = findViewById<TextView>(R.id.result_text)
-            val judge = findViewById<TextView>(R.id.judge_text)
-            result.text = ""
-            judge.text=""
             var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             startActivityForResult(intent, 123)
         }
 
         val uploadButton = findViewById<Button>(R.id.upload_button)
         uploadButton.setOnClickListener {
-            val result = findViewById<TextView>(R.id.result_text)
-            val judge = findViewById<TextView>(R.id.judge_text)
-            result.text = ""
-            judge.text=""
             var intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             startActivityForResult(intent, 456)
@@ -40,18 +32,6 @@ class MainActivity : AppCompatActivity() {
 
         val resultButton = findViewById<Button>(R.id.run_button)
         resultButton.setOnClickListener {
-            var rnds = (1..10).random()
-            val result = findViewById<TextView>(R.id.result_text)
-            val judge = findViewById<TextView>(R.id.judge_text)
-            Thread.sleep(500)
-            if (rnds>=5){
-                result.text = "Fracture Confidence: 0.6"
-                judge.text = "Confidence result is below preset value"
-            }
-            else{
-                result.text = "Fracture Confidence: 0.2"
-                judge.text = "Confidence result is below preset value"
-            }
 
         }
 
