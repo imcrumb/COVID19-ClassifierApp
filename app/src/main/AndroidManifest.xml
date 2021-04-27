@@ -14,7 +14,7 @@
         <activity
             android:name=".ResultActivity"
             android:label="@string/title_activity_result"
-            android:theme="@style/Theme.Prototype.NoActionBar"></activity>
+            android:theme="@style/Theme.Prototype.NoActionBar" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
