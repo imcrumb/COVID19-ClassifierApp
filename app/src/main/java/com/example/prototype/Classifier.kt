@@ -3,6 +3,7 @@ package com.example.prototype
 import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.util.Log
 import org.tensorflow.lite.Interpreter
 import java.io.BufferedReader
 import java.io.FileInputStream
@@ -30,16 +31,30 @@ class Classifier constructor(private val assetManager: AssetManager){
         var labels = loadLabelFile(assetManager,LABEL)
         labelOut = Array(1) { ByteArray(labels.size) }
         interpreter = Interpreter(loadModelFile(assetManager, MODEL))
+        imgBytes = ByteBuffer.allocateDirect(4 * 64 * 64 * 1)
+        imgBytes.order(ByteOrder.nativeOrder())
     }
 
     private fun bitmapToByteBuffer(bitmap: Bitmap): ByteBuffer {
-        imgBytes = ByteBuffer.allocateDirect(1 * 64 * 64 * 3)
-        imgBytes.order(ByteOrder.nativeOrder())
+        imgBytes.rewind()
+        Log.d("BITMAPWIDTH",bitmap.width.toString())
+        Log.d("BITMAPHEIGHT",bitmap.height.toString())
         bitmap.getPixels(intValues, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
-        for (pixel in intValues){
+        var pixel = 0
+        for (i in 0 until bitmap.width) {
+            for (j in 0 until bitmap.height) {
+                val value = intValues!![pixel++]
+                imgBytes!!.put((Color.red(pixel)).toByte())
+                //imgBytes!!.putFloat(Color.red(pixel).toFloat()/255.0f)
+                //imgBytes!!.putFloat((value shr 16 and 0xFF)/255.0f)
+                //imgBytes!!.putFloat((value shr 8 and 0xFF)/255.0f)
+                //imgBytes!!.putFloat((value and 0xFF)/255.0f)
+            }
+        }
+        /*for (pixel in intValues){
             var value = Color.red(pixel).toFloat()/255.0f
             imgBytes.putFloat(value)
-        }
+        }*/
         return imgBytes
     }
 
@@ -89,8 +104,8 @@ class Classifier constructor(private val assetManager: AssetManager){
     }
 
     fun recognise(bitmap: Bitmap): ArrayList<Output>{
-        val scaledBitmap = Bitmap.createScaledBitmap(bitmap,64,64,false)
-        val bBuf = bitmapToByteBuffer(scaledBitmap)
+        //val scaledBitmap = Bitmap.createScaledBitmap(bitmap,64,64,false)
+        val bBuf = bitmapToByteBuffer(bitmap)
         interpreter?.run(bBuf,labelOut)
         return getSortedArray(labelOut)
     }
